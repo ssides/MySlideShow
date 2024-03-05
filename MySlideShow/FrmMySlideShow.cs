@@ -14,7 +14,7 @@ namespace MySlideShow
             InitializeComponent();
 
             _props = new PropertiesService("properties.json").Load();
-            _files = (new FileService().GetFiles(_props.PicturePath)).OrderBy(s => s).ToList();
+            _files = new FileService().GetFiles(_props.PicturePath).OrderBy(s => s).ToList();
             _vs = new ViewService(pbSlide.Size);
             ShowSlide();
 

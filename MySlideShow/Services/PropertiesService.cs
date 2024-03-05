@@ -22,14 +22,14 @@ namespace MySlideShow.Services
 
         internal Properties Load()
         {
-            var props = new Properties();
+            Properties? props = null;
 
             using (var reader = File.OpenText(_path))
             {
                 props = JsonSerializer.Deserialize<Properties>(reader.ReadToEnd());
             }
 
-            return props;
+            return props ?? new Properties();
         }
     }
 }
