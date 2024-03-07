@@ -13,14 +13,15 @@ namespace MySlideShow
         {
             InitializeComponent();
 
+            // new PropertiesService("properties.json").Save(new Properties());
+
             _props = new PropertiesService("properties.json").Load();
             _files = new FileService().GetFiles(_props.PicturePath).OrderBy(s => s).ToList();
             _vs = new ViewService(pbSlide.Size);
             ShowSlide();
 
-            // lblFileName is for debugging.
-            // set this true if you need the filename of the image.  For example, if you need to look for slides that need to be rotated.
-            lblFileName.Visible = false;
+            // Set Debug true if you need the filename of the image.  For example, if you need to look for slides that need to be rotated.
+            lblFileName.Visible = _props.Debug;
         }
 
         private void ShowSlide()
