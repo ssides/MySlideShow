@@ -11,7 +11,8 @@ namespace MySlideShow.Services
         private Bitmap _404Image;
         private int _messagesHeight;
 
-        public ReviewViewService(Size viewSize, string tempPath, List<string> tempFiles, int messagesHeight) {
+        public ReviewViewService(Size viewSize, string tempPath, List<string> tempFiles, int messagesHeight)
+        {
             _size = viewSize;
             _tempFiles = tempFiles;
             _tempPath = tempPath;
@@ -32,7 +33,7 @@ namespace MySlideShow.Services
                 try
                 {
                     File.Copy(path, tempFN, true);
-                    DrawImage(gfx, tempFN);
+                    DrawImageForDisplay(gfx, tempFN);
                 }
                 catch
                 {
@@ -41,6 +42,38 @@ namespace MySlideShow.Services
             }
 
             return display;
+        }
+
+        internal void RotateOld(string path)
+        {
+            var tempFN = GetTempFileName(path);
+            _tempFiles.Add(tempFN);
+            File.Copy(path, tempFN, true);
+            var img = new Bitmap(tempFN);
+            var hw = img.Size.Width > img.Size.Height ? img.Size.Width : img.Size.Height;
+            var maxSize = new Bitmap(hw, hw);
+
+            using (var gfx = Graphics.FromImage(maxSize))
+            {
+                gfx.TranslateTransform(hw / 2, hw / 2);
+                gfx.RotateTransform(90.0f);
+                gfx.TranslateTransform(-hw / 2, -hw / 2);
+
+                gfx.DrawImage(img, new Point(0, 0));
+            }
+
+            var rotated = maxSize.Clone(new Rectangle(new Point(0, 0), img.Size), img.PixelFormat);
+            rotated.Save(path);
+        }
+
+        internal void Rotate(string path)
+        {
+            var tempFN = GetTempFileName(path);
+            _tempFiles.Add(tempFN);
+            File.Copy(path, tempFN, true);
+            var img = new Bitmap(tempFN);
+            img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+            img.Save(path);
         }
 
         private void Draw404(Graphics gfx)
@@ -57,13 +90,13 @@ namespace MySlideShow.Services
             return Path.Combine(_tempPath, fn);
         }
 
-        private void DrawImage(Graphics gfx, string path)
+        private void DrawImageForDisplay(Graphics gfx, string path)
         {
-            Bitmap img = new Bitmap(path);
+            var img = new Bitmap(path);
             var displayRect = View.GetImageRectangle(_size, img.Size);
             gfx.DrawImage(img, displayRect);
         }
-              
+
         internal string AddMessage(string message)
         {
             _messages.Add(message);

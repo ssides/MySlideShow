@@ -33,6 +33,7 @@
             pnlPath = new Panel();
             txtPath = new TextBox();
             pnlControl = new Panel();
+            btnRotate = new Button();
             btnSave = new Button();
             btnDelete = new Button();
             txtMessages = new TextBox();
@@ -96,6 +97,7 @@
             // 
             // pnlControl
             // 
+            pnlControl.Controls.Add(btnRotate);
             pnlControl.Controls.Add(btnSave);
             pnlControl.Controls.Add(btnDelete);
             pnlControl.Dock = DockStyle.Fill;
@@ -103,6 +105,16 @@
             pnlControl.Name = "pnlControl";
             pnlControl.Size = new Size(281, 37);
             pnlControl.TabIndex = 1;
+            // 
+            // btnRotate
+            // 
+            btnRotate.Location = new Point(152, 2);
+            btnRotate.Name = "btnRotate";
+            btnRotate.Size = new Size(72, 29);
+            btnRotate.TabIndex = 2;
+            btnRotate.Text = "&Rotate";
+            btnRotate.UseVisualStyleBackColor = true;
+            btnRotate.Click += btnRotate_Click;
             // 
             // btnSave
             // 
@@ -175,5 +187,6 @@
         private Button btnDelete;
         private TextBox txtMessages;
         private PictureBox pbImage;
+        private Button btnRotate;
     }
 }
