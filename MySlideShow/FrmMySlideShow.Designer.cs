@@ -30,10 +30,10 @@
         {
             tableLayoutApp = new TableLayoutPanel();
             pnlControl = new Panel();
+            txtFilePath = new TextBox();
             btnPrev = new Button();
             btnNext = new Button();
             pbSlide = new PictureBox();
-            txtFilePath = new TextBox();
             tableLayoutApp.SuspendLayout();
             pnlControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pbSlide).BeginInit();
@@ -65,6 +65,14 @@
             pnlControl.Size = new Size(794, 54);
             pnlControl.TabIndex = 0;
             // 
+            // txtFilePath
+            // 
+            txtFilePath.Location = new Point(235, 13);
+            txtFilePath.Name = "txtFilePath";
+            txtFilePath.ReadOnly = true;
+            txtFilePath.Size = new Size(514, 27);
+            txtFilePath.TabIndex = 2;
+            // 
             // btnPrev
             // 
             btnPrev.Location = new Point(23, 12);
@@ -95,14 +103,6 @@
             pbSlide.TabStop = false;
             pbSlide.SizeChanged += pbSlide_SizeChanged;
             // 
-            // txtFilePath
-            // 
-            txtFilePath.Location = new Point(235, 13);
-            txtFilePath.Name = "txtFilePath";
-            txtFilePath.ReadOnly = true;
-            txtFilePath.Size = new Size(514, 27);
-            txtFilePath.TabIndex = 2;
-            // 
             // FrmMySlideShow
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -110,6 +110,7 @@
             ClientSize = new Size(800, 450);
             Controls.Add(tableLayoutApp);
             Name = "FrmMySlideShow";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "MySlideShow";
             tableLayoutApp.ResumeLayout(false);
             pnlControl.ResumeLayout(false);
