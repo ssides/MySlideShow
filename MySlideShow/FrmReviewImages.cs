@@ -1,5 +1,6 @@
 ﻿using MySlideShow.Models;
 using MySlideShow.Services;
+using System.Diagnostics;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -100,6 +101,29 @@ namespace MySlideShow
         {
             _reviewingFile.HasBeenReviewed = true;
             ShowImage(message);
+        }
+
+        private void txtPath_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                var oldFileName = Path.GetFileName(_reviewingFile.FullPath);
+                var newFilename = Path.GetFileName(txtPath.Text);
+                var newPath = Path.Combine(Path.GetDirectoryName(_reviewingFile.FullPath), newFilename);
+                if (_reviewingFile.FullPath != newPath)
+                {
+                    _fs.Rename(_reviewingFile.FullPath, newPath);
+
+                    var rf = _reviewedFiles.First(f => f.FullPath == _reviewingFile.FullPath);
+                    rf.FullPath = newPath;
+                    _reviewingFile.FullPath = newPath;
+                    txtMessages.Text = _vs.AddMessage($"Renamed {oldFileName} to {newFilename}");
+                }
+            }
+            catch (Exception ex)
+            {
+                new FrmError(this, ex.Message).ShowDialog();
+            }
         }
     }
 }

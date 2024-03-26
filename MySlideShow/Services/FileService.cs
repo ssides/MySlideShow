@@ -142,5 +142,10 @@ namespace MySlideShow.Services
             var filename = $"{fn} - Copy{n}";
             return Path.Combine(tempPath, filename + ext);
         }
+
+        internal void Rename(string fullPath, string newFileName)
+        {
+            File.Move(fullPath, newFileName);
+        }
     }
 }
