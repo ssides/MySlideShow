@@ -1,1 +1,5 @@
-{"PicturePath":"","Debug":false}
+{
+  "PicturePath": "",
+  "Debug": false,
+  "IncludeSubdirectories": true
+}

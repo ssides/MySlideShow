@@ -30,10 +30,10 @@
         {
             tableLayoutApp = new TableLayoutPanel();
             pnlControl = new Panel();
-            lblFileName = new Label();
             btnPrev = new Button();
             btnNext = new Button();
             pbSlide = new PictureBox();
+            txtFilePath = new TextBox();
             tableLayoutApp.SuspendLayout();
             pnlControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pbSlide).BeginInit();
@@ -56,7 +56,7 @@
             // 
             // pnlControl
             // 
-            pnlControl.Controls.Add(lblFileName);
+            pnlControl.Controls.Add(txtFilePath);
             pnlControl.Controls.Add(btnPrev);
             pnlControl.Controls.Add(btnNext);
             pnlControl.Dock = DockStyle.Fill;
@@ -64,15 +64,6 @@
             pnlControl.Name = "pnlControl";
             pnlControl.Size = new Size(794, 54);
             pnlControl.TabIndex = 0;
-            // 
-            // lblFileName
-            // 
-            lblFileName.AutoSize = true;
-            lblFileName.Location = new Point(246, 16);
-            lblFileName.Name = "lblFileName";
-            lblFileName.Size = new Size(0, 20);
-            lblFileName.TabIndex = 2;
-            lblFileName.Visible = false;
             // 
             // btnPrev
             // 
@@ -104,6 +95,14 @@
             pbSlide.TabStop = false;
             pbSlide.SizeChanged += pbSlide_SizeChanged;
             // 
+            // txtFilePath
+            // 
+            txtFilePath.Location = new Point(235, 13);
+            txtFilePath.Name = "txtFilePath";
+            txtFilePath.ReadOnly = true;
+            txtFilePath.Size = new Size(514, 27);
+            txtFilePath.TabIndex = 2;
+            // 
             // FrmMySlideShow
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -126,6 +125,6 @@
         private Button btnNext;
         private Button btnPrev;
         private PictureBox pbSlide;
-        private Label lblFileName;
+        private TextBox txtFilePath;
     }
 }
