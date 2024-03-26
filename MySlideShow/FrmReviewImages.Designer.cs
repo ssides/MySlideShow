@@ -92,6 +92,7 @@
             txtPath.Name = "txtPath";
             txtPath.Size = new Size(501, 27);
             txtPath.TabIndex = 0;
+            txtPath.Leave += txtPath_Leave;
             // 
             // pnlControl
             // 
