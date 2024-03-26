@@ -1,4 +1,9 @@
-﻿namespace MySlideShow.Services
+﻿using Microsoft.VisualBasic.FileIO;
+using MySlideShow.Models;
+using System.Diagnostics;
+using System.Text.Json;
+
+namespace MySlideShow.Services
 {
     internal class FileService
     {
@@ -21,6 +26,15 @@
             }
 
             return ret;
+        }
+
+        public void SaveReviewedFiles(string filename, List<ImageFile> files)
+        {
+            using (var writer = File.CreateText(filename))
+            {
+                string jsonString = JsonSerializer.Serialize(files);
+                writer.Write(jsonString);
+            }
         }
 
         private void GetFilesRecurse(string basepath)
@@ -54,6 +68,79 @@
             }
 
             return result;
+        }
+
+        internal List<ImageFile> GetReviewedFiles(string filename)
+        {
+            var result = new List<ImageFile>();
+
+            if (File.Exists(filename))
+            {
+                using (var reader = File.OpenText(filename))
+                {
+                    result = JsonSerializer.Deserialize<List<ImageFile>>(reader.ReadToEnd());
+                }
+            }
+
+            return result ?? new List<ImageFile>();
+        }
+
+        internal void TryDeleteTempFiles(List<string> tmpFiles)
+        {
+            foreach (var f in tmpFiles)
+            {
+                try
+                {
+                    File.Delete(f);
+                    Debug.WriteLine($"Deleted {f}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Could not delete temp file: {ex.Message}");
+                }
+            }
+        }
+
+        internal string DeleteFile(string fullPath)
+        {
+            var result = "";
+
+            if (!fullPath.ToLower().StartsWith("c:"))
+            {
+                result = CopyToTemp(fullPath);
+            }
+
+            FileSystem.DeleteFile(fullPath,
+                UIOption.OnlyErrorDialogs,
+                RecycleOption.SendToRecycleBin,
+                UICancelOption.ThrowException);
+
+            return result;
+        }
+
+        private string CopyToTemp(string fullPath)
+        {
+            var tempPath = Path.GetTempPath();
+            var fn = Path.GetFileNameWithoutExtension(fullPath);
+            var ext = Path.GetExtension(fullPath);
+            var i = 0;
+            var tfn = GetFullTempPath(tempPath, fn, ext, i);
+
+            while (File.Exists(tfn))
+            {
+                i++;
+                tfn = GetFullTempPath(tempPath, fn, ext, i);
+            }
+            File.Copy(fullPath, tfn, true);
+
+            return $"Copied to {tfn}";
+        }
+
+        private string GetFullTempPath(string tempPath, string fn, string ext, int i)
+        {
+            var n = i == 0 ? "" : $" ({i})";
+            var filename = $"{fn} - Copy{n}";
+            return Path.Combine(tempPath, filename + ext);
         }
     }
 }

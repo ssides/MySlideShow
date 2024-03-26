@@ -5,23 +5,21 @@ namespace MySlideShow
 {
     public partial class FrmMySlideShow : Form
     {
-        private Properties _props;
+        private AppSettings _settings;
         private List<string> _files;
-        private ViewService _vs;
+        private SlideShowViewService _vs;
         private int _index = 0;
-        public FrmMySlideShow()
+        public FrmMySlideShow(Form owner, AppSettings settings)
         {
             InitializeComponent();
 
-            // new PropertiesService("properties.json").Save(new Properties());
-
-            _props = new PropertiesService("properties.json").Load();
-            _files = new FileService().GetFiles(_props.PicturePath, _props.IncludeSubdirectories).OrderBy(s => s).ToList();
-            _vs = new ViewService(pbSlide.Size);
+            _settings = settings;
+            _files = new FileService().GetFiles(_settings.PicturePath, _settings.IncludeSubdirectories).OrderBy(s => s).ToList();
+            _vs = new SlideShowViewService(pbSlide.Size);
             ShowSlide();
 
             // Set Debug true if you need the filename of the image.  For example, if you need to look for slides that need to be rotated.
-            txtFilePath.Visible = _props.Debug;
+            txtFilePath.Visible = _settings.ShowPath;
         }
 
         private void ShowSlide()
@@ -33,7 +31,7 @@ namespace MySlideShow
 
         private void pbSlide_SizeChanged(object sender, EventArgs e)
         {
-            _vs = new ViewService(pbSlide.Size);
+            _vs = new SlideShowViewService(pbSlide.Size);
             ShowSlide();
         }
 

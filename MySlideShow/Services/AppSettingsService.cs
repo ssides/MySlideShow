@@ -3,15 +3,15 @@ using System.Text.Json;
 
 namespace MySlideShow.Services
 {
-    internal class PropertiesService
+    internal class AppSettingsService
     {
         private string _path;
 
-        internal PropertiesService(string path) {
+        internal AppSettingsService(string path) {
             _path = path;
         }
 
-        internal void Save(Properties props)
+        internal void Save(AppSettings props)
         {
             using (var writer = File.CreateText(_path))
             {
@@ -20,16 +20,16 @@ namespace MySlideShow.Services
             }
         }
 
-        internal Properties Load()
+        internal AppSettings Load()
         {
-            Properties? props = null;
+            AppSettings? props = null;
 
             using (var reader = File.OpenText(_path))
             {
-                props = JsonSerializer.Deserialize<Properties>(reader.ReadToEnd());
+                props = JsonSerializer.Deserialize<AppSettings>(reader.ReadToEnd());
             }
 
-            return props ?? new Properties();
+            return props ?? new AppSettings();
         }
     }
 }
