@@ -31,7 +31,7 @@ namespace MySlideShow
             _fs = new FileService();
             _files = _fs.GetFiles(_settings.PicturePath, _settings.IncludeSubdirectories).OrderBy(s => s).ToList();
             _reviewedFiles = new DataService().GetReviewedFiles(_fs.GetReviewedFiles(App.ReviewedFiles), _files);
-            ShowImage("");
+            ShowNextImage("");
             var c = _reviewedFiles.Count(c => !c.HasBeenReviewed);
             txtMessages.Text = _vs.AddMessage($"{c} file(s) have not been reviewed.");
             btnDelete.Visible = btnDelete.Enabled = _settings.AllowDelete;
@@ -43,7 +43,7 @@ namespace MySlideShow
             return h / sizeOfOneLine.Height;
         }
 
-        private void ShowImage(string message)
+        private void ShowNextImage(string message)
         {
             _reviewingFile = _reviewedFiles.OrderBy(i => i.FullPath).FirstOrDefault(f => !f.HasBeenReviewed);
 
@@ -66,7 +66,7 @@ namespace MySlideShow
         private void pbImage_SizeChanged(object sender, EventArgs e)
         {
             _vs = new ReviewViewService(pbImage.Size, _tempPath, _tempFiles, GetNumLines(txtMessages.Size.Height));
-            ShowImage("");
+            ShowNextImage("");
         }
 
         private void FrmReviewImages_FormClosing(object sender, FormClosingEventArgs e)
@@ -100,7 +100,7 @@ namespace MySlideShow
         private void ShowReviewedAndGetNext(string message)
         {
             _reviewingFile.HasBeenReviewed = true;
-            ShowImage(message);
+            ShowNextImage(message);
         }
 
         private void txtPath_Leave(object sender, EventArgs e)
@@ -123,6 +123,23 @@ namespace MySlideShow
             catch (Exception ex)
             {
                 new FrmError(this, ex.Message).ShowDialog();
+            }
+        }
+
+        private void btnRotate_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(_reviewingFile.FullPath))
+            {
+                try
+                {
+                    _vs.Rotate(_reviewingFile.FullPath);
+                    pbImage.Image = _vs.GetImage(_reviewingFile.FullPath);
+                    txtPath.Text = _reviewingFile.FullPath;
+                }
+                catch (Exception ex)
+                {
+                    new FrmError(this, ex.ToString()).ShowDialog();
+                }
             }
         }
     }
