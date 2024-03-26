@@ -4,5 +4,6 @@
     {
         public string PicturePath { get; set; } = "";
         public bool Debug { get; set; } = false;
+        public bool IncludeSubdirectories { get; set; } = false;
     }
 }
