@@ -37,11 +37,15 @@
             label1 = new Label();
             btnReviewFiles = new Button();
             btnSlideShow = new Button();
+            label2 = new Label();
+            txtAutoChangeSeconds = new TextBox();
             pnlInit.SuspendLayout();
             SuspendLayout();
             // 
             // pnlInit
             // 
+            pnlInit.Controls.Add(txtAutoChangeSeconds);
+            pnlInit.Controls.Add(label2);
             pnlInit.Controls.Add(cbAllowDelete);
             pnlInit.Controls.Add(btnClearReviewedFiles);
             pnlInit.Controls.Add(cbShowPath);
@@ -59,7 +63,7 @@
             // cbAllowDelete
             // 
             cbAllowDelete.AutoSize = true;
-            cbAllowDelete.Location = new Point(248, 93);
+            cbAllowDelete.Location = new Point(248, 85);
             cbAllowDelete.Name = "cbAllowDelete";
             cbAllowDelete.Size = new Size(222, 24);
             cbAllowDelete.TabIndex = 7;
@@ -68,7 +72,7 @@
             // 
             // btnClearReviewedFiles
             // 
-            btnClearReviewedFiles.Location = new Point(361, 141);
+            btnClearReviewedFiles.Location = new Point(361, 148);
             btnClearReviewedFiles.Name = "btnClearReviewedFiles";
             btnClearReviewedFiles.Size = new Size(216, 29);
             btnClearReviewedFiles.TabIndex = 6;
@@ -79,7 +83,7 @@
             // cbShowPath
             // 
             cbShowPath.AutoSize = true;
-            cbShowPath.Location = new Point(65, 93);
+            cbShowPath.Location = new Point(65, 85);
             cbShowPath.Name = "cbShowPath";
             cbShowPath.Size = new Size(147, 24);
             cbShowPath.TabIndex = 5;
@@ -114,7 +118,7 @@
             // 
             // btnReviewFiles
             // 
-            btnReviewFiles.Location = new Point(193, 141);
+            btnReviewFiles.Location = new Point(193, 148);
             btnReviewFiles.Name = "btnReviewFiles";
             btnReviewFiles.Size = new Size(146, 29);
             btnReviewFiles.TabIndex = 1;
@@ -124,13 +128,29 @@
             // 
             // btnSlideShow
             // 
-            btnSlideShow.Location = new Point(31, 141);
+            btnSlideShow.Location = new Point(31, 148);
             btnSlideShow.Name = "btnSlideShow";
             btnSlideShow.Size = new Size(146, 29);
             btnSlideShow.TabIndex = 0;
             btnSlideShow.Text = "&Slide show";
             btnSlideShow.UseVisualStyleBackColor = true;
             btnSlideShow.Click += btnSlideShow_Click;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(65, 117);
+            label2.Name = "label2";
+            label2.Size = new Size(263, 20);
+            label2.TabIndex = 8;
+            label2.Text = "Slide show automatic change seconds:";
+            // 
+            // txtAutoChangeSeconds
+            // 
+            txtAutoChangeSeconds.Location = new Point(334, 114);
+            txtAutoChangeSeconds.Name = "txtAutoChangeSeconds";
+            txtAutoChangeSeconds.Size = new Size(60, 27);
+            txtAutoChangeSeconds.TabIndex = 9;
             // 
             // FrmInit
             // 
@@ -160,5 +180,7 @@
         private Button btnSlideShow;
         private Button btnClearReviewedFiles;
         private CheckBox cbAllowDelete;
+        private TextBox txtAutoChangeSeconds;
+        private Label label2;
     }
 }

@@ -9,6 +9,8 @@ namespace MySlideShow
         private List<string> _files;
         private SlideShowViewService _vs;
         private int _index = 0;
+        private int _currentSlideSeconds = 0;
+
         public FrmMySlideShow(Form owner, AppSettings settings)
         {
             InitializeComponent();
@@ -16,10 +18,10 @@ namespace MySlideShow
             _settings = settings;
             _files = new FileService().GetFiles(_settings.PicturePath, _settings.IncludeSubdirectories).OrderBy(f => f).ToList();
             _vs = new SlideShowViewService(pbSlide.Size);
-            ShowSlide();
-
-            // Set Debug true if you need the filename of the image.  For example, if you need to look for slides that need to be rotated.
+            _currentSlideSeconds = _settings.AutoChangeSeconds;
             txtFilePath.Visible = _settings.ShowPath;
+
+            ShowSlide();
         }
 
         private void ShowSlide()
@@ -52,5 +54,23 @@ namespace MySlideShow
                 ShowSlide();
             }
         }
+
+        private void tmrAutoChange_Tick(object sender, EventArgs e)
+        {
+            if (_settings.AutoChangeSeconds > 0)
+            {
+                if (_currentSlideSeconds <= 0)
+                {
+                    _index = _index < _files.Count - 1 ? _index + 1 : 0;
+                    ShowSlide();
+                    _currentSlideSeconds = _settings.AutoChangeSeconds;
+                }
+                else
+                {
+                    _currentSlideSeconds--;
+                }
+            }
+        }
+
     }
 }
