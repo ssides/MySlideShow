@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             tableLayoutApp = new TableLayoutPanel();
             pnlControl = new Panel();
             txtFilePath = new TextBox();
             btnPrev = new Button();
             btnNext = new Button();
             pbSlide = new PictureBox();
+            tmrAutoChange = new System.Windows.Forms.Timer(components);
             tableLayoutApp.SuspendLayout();
             pnlControl.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pbSlide).BeginInit();
@@ -103,6 +105,12 @@
             pbSlide.TabStop = false;
             pbSlide.SizeChanged += pbSlide_SizeChanged;
             // 
+            // tmrAutoChange
+            // 
+            tmrAutoChange.Enabled = true;
+            tmrAutoChange.Interval = 1000;
+            tmrAutoChange.Tick += tmrAutoChange_Tick;
+            // 
             // FrmMySlideShow
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -127,5 +135,6 @@
         private Button btnPrev;
         private PictureBox pbSlide;
         private TextBox txtFilePath;
+        private System.Windows.Forms.Timer tmrAutoChange;
     }
 }

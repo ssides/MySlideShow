@@ -21,14 +21,14 @@ namespace MySlideShow
             cbRecurseFolders.Checked = _appSettings.IncludeSubdirectories;
             cbShowPath.Checked = _appSettings.ShowPath;
             cbAllowDelete.Checked = _appSettings.AllowDelete;
+            txtAutoChangeSeconds.Text = _appSettings.AutoChangeSeconds.ToString();
         }
 
         private void btnSlideShow_Click(object sender, EventArgs e)
         {
-            SaveSettings();
-
             try
             {
+                SaveSettings();
                 new FrmMySlideShow(this, _appSettings).ShowDialog();
             }
             catch (Exception ex)
@@ -39,10 +39,9 @@ namespace MySlideShow
 
         private void btnReviewFiles_Click(object sender, EventArgs e)
         {
-            SaveSettings();
-
             try
             {
+                SaveSettings();
                 new FrmReviewImages(this, _appSettings).ShowDialog();
             }
             catch (Exception ex)
@@ -58,8 +57,24 @@ namespace MySlideShow
 
         private void SaveSettings()
         {
-            _appSettings = new AppSettings() { PicturePath = txtPath.Text, IncludeSubdirectories = cbRecurseFolders.Checked, ShowPath = cbShowPath.Checked, AllowDelete = cbAllowDelete.Checked };
+            _appSettings = new AppSettings()
+            {
+                PicturePath = txtPath.Text,
+                IncludeSubdirectories = cbRecurseFolders.Checked,
+                ShowPath = cbShowPath.Checked,
+                AllowDelete = cbAllowDelete.Checked,
+                AutoChangeSeconds = int.Parse(txtAutoChangeSeconds.Text)
+            };
+            Validate(_appSettings);
             new AppSettingsService(App.AppSettings).Save(_appSettings);
+        }
+
+        private void Validate(AppSettings appSettings)
+        {
+            if (appSettings.AutoChangeSeconds < 0 || appSettings.AutoChangeSeconds > 30)
+            {
+                throw new Exception("AutoChangeSeconds must be 0 to 30");
+            }
         }
 
         private void btnClearReviewedFiles_Click(object sender, EventArgs e)
