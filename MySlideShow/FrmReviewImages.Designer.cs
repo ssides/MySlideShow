@@ -33,6 +33,7 @@
             pnlPath = new Panel();
             txtPath = new TextBox();
             pnlControl = new Panel();
+            btnUndo = new Button();
             btnRotate = new Button();
             btnSave = new Button();
             btnDelete = new Button();
@@ -65,7 +66,7 @@
             // ctrlLayout
             // 
             ctrlLayout.ColumnCount = 2;
-            ctrlLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 287F));
+            ctrlLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 305F));
             ctrlLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             ctrlLayout.Controls.Add(pnlPath, 1, 0);
             ctrlLayout.Controls.Add(pnlControl, 0, 0);
@@ -81,9 +82,9 @@
             // 
             pnlPath.Controls.Add(txtPath);
             pnlPath.Dock = DockStyle.Fill;
-            pnlPath.Location = new Point(290, 3);
+            pnlPath.Location = new Point(308, 3);
             pnlPath.Name = "pnlPath";
-            pnlPath.Size = new Size(501, 37);
+            pnlPath.Size = new Size(483, 37);
             pnlPath.TabIndex = 0;
             // 
             // txtPath
@@ -91,26 +92,37 @@
             txtPath.Dock = DockStyle.Fill;
             txtPath.Location = new Point(0, 0);
             txtPath.Name = "txtPath";
-            txtPath.Size = new Size(501, 27);
+            txtPath.Size = new Size(483, 27);
             txtPath.TabIndex = 0;
             txtPath.Leave += txtPath_Leave;
             // 
             // pnlControl
             // 
+            pnlControl.Controls.Add(btnUndo);
             pnlControl.Controls.Add(btnRotate);
             pnlControl.Controls.Add(btnSave);
             pnlControl.Controls.Add(btnDelete);
             pnlControl.Dock = DockStyle.Fill;
             pnlControl.Location = new Point(3, 3);
             pnlControl.Name = "pnlControl";
-            pnlControl.Size = new Size(281, 37);
+            pnlControl.Size = new Size(299, 37);
             pnlControl.TabIndex = 1;
+            // 
+            // btnUndo
+            // 
+            btnUndo.Location = new Point(224, 2);
+            btnUndo.Name = "btnUndo";
+            btnUndo.Size = new Size(68, 29);
+            btnUndo.TabIndex = 3;
+            btnUndo.Text = "&Undo";
+            btnUndo.UseVisualStyleBackColor = true;
+            btnUndo.Click += btnUndo_Click;
             // 
             // btnRotate
             // 
-            btnRotate.Location = new Point(152, 2);
+            btnRotate.Location = new Point(150, 2);
             btnRotate.Name = "btnRotate";
-            btnRotate.Size = new Size(72, 29);
+            btnRotate.Size = new Size(68, 29);
             btnRotate.TabIndex = 2;
             btnRotate.Text = "&Rotate";
             btnRotate.UseVisualStyleBackColor = true;
@@ -145,6 +157,7 @@
             txtMessages.ReadOnly = true;
             txtMessages.Size = new Size(794, 144);
             txtMessages.TabIndex = 1;
+            txtMessages.WordWrap = false;
             // 
             // pbImage
             // 
@@ -155,6 +168,7 @@
             pbImage.TabIndex = 2;
             pbImage.TabStop = false;
             pbImage.SizeChanged += pbImage_SizeChanged;
+            pbImage.DoubleClick += pbImage_DoubleClick;
             // 
             // FrmReviewImages
             // 
@@ -188,5 +202,6 @@
         private TextBox txtMessages;
         private PictureBox pbImage;
         private Button btnRotate;
+        private Button btnUndo;
     }
 }

@@ -14,7 +14,7 @@ namespace MySlideShow
             InitializeComponent();
 
             _settings = settings;
-            _files = new FileService().GetFiles(_settings.PicturePath, _settings.IncludeSubdirectories).OrderBy(s => s).ToList();
+            _files = new FileService().GetFiles(_settings.PicturePath, _settings.IncludeSubdirectories).OrderBy(f => f).ToList();
             _vs = new SlideShowViewService(pbSlide.Size);
             ShowSlide();
 

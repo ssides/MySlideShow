@@ -4,5 +4,7 @@
     {
         public static readonly string AppSettings = "appsettings.json";
         public static readonly string ReviewedFiles = "reviewedFiles.json";
+        public enum Action { Void, Delete, Save }
     }
 }
+

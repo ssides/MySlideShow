@@ -2,7 +2,7 @@
 
 namespace MySlideShow.Services
 {
-    internal class ReviewViewService
+    internal class ReviewViewService : ViewBase
     {
         private Size _size;
         private List<string> _tempFiles;
@@ -17,7 +17,7 @@ namespace MySlideShow.Services
             _tempFiles = tempFiles;
             _tempPath = tempPath;
             _messages = new List<string>();
-            _404Image = View.Get404Image(_size);
+            _404Image = Get404Image(_size);
             _messagesHeight = messagesHeight;
         }
 
@@ -27,7 +27,7 @@ namespace MySlideShow.Services
 
             using (var gfx = Graphics.FromImage(display))
             {
-                View.FillColor(_size, gfx, Color.White);
+                FillColor(_size, gfx, Color.White);
                 var tempFN = GetTempFileName(path);
                 _tempFiles.Add(tempFN);
                 try
@@ -44,28 +44,6 @@ namespace MySlideShow.Services
             return display;
         }
 
-        internal void RotateOld(string path)
-        {
-            var tempFN = GetTempFileName(path);
-            _tempFiles.Add(tempFN);
-            File.Copy(path, tempFN, true);
-            var img = new Bitmap(tempFN);
-            var hw = img.Size.Width > img.Size.Height ? img.Size.Width : img.Size.Height;
-            var maxSize = new Bitmap(hw, hw);
-
-            using (var gfx = Graphics.FromImage(maxSize))
-            {
-                gfx.TranslateTransform(hw / 2, hw / 2);
-                gfx.RotateTransform(90.0f);
-                gfx.TranslateTransform(-hw / 2, -hw / 2);
-
-                gfx.DrawImage(img, new Point(0, 0));
-            }
-
-            var rotated = maxSize.Clone(new Rectangle(new Point(0, 0), img.Size), img.PixelFormat);
-            rotated.Save(path);
-        }
-
         internal void Rotate(string path)
         {
             var tempFN = GetTempFileName(path);
@@ -78,7 +56,7 @@ namespace MySlideShow.Services
 
         private void Draw404(Graphics gfx)
         {
-            var displayRect = View.GetImageRectangle(_size, _404Image.Size);
+            var displayRect = GetImageRectangle(_size, _404Image.Size);
             gfx.DrawImage(_404Image, displayRect);
         }
 
@@ -93,17 +71,17 @@ namespace MySlideShow.Services
         private void DrawImageForDisplay(Graphics gfx, string path)
         {
             var img = new Bitmap(path);
-            var displayRect = View.GetImageRectangle(_size, img.Size);
+            var displayRect = GetImageRectangle(_size, img.Size);
             gfx.DrawImage(img, displayRect);
         }
 
         internal string AddMessage(string message)
         {
             _messages.Add(message);
-            return LastMessage(_messagesHeight);
+            return LastMessages(_messagesHeight);
         }
 
-        private string LastMessage(int cnt)
+        private string LastMessages(int cnt)
         {
             var msgs = _messages.TakeLast(cnt).ToList();
             var result = new StringBuilder();
@@ -113,9 +91,6 @@ namespace MySlideShow.Services
             }
             return result.ToString();
         }
-
-
-
 
     }
 }
