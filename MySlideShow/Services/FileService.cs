@@ -69,7 +69,7 @@ namespace MySlideShow.Services
 
             foreach (var f in dirInfo.GetFiles())
             {
-                if (_validExtensions.Contains(f.Extension))
+                if (_validExtensions.Contains(f.Extension.ToLower()))
                 {
                     result.Add(f.FullName);
                 }

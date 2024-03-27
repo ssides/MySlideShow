@@ -120,6 +120,7 @@
             Name = "FrmMySlideShow";
             StartPosition = FormStartPosition.CenterParent;
             Text = "MySlideShow";
+            FormClosing += FrmMySlideShow_FormClosing;
             tableLayoutApp.ResumeLayout(false);
             pnlControl.ResumeLayout(false);
             pnlControl.PerformLayout();
