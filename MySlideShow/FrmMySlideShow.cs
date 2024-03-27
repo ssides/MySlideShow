@@ -20,6 +20,7 @@ namespace MySlideShow
             _vs = new SlideShowViewService(pbSlide.Size);
             _currentSlideSeconds = _settings.AutoChangeSeconds;
             txtFilePath.Visible = _settings.ShowPath;
+            tmrAutoChange.Enabled = true;
 
             ShowSlide();
         }
@@ -72,5 +73,9 @@ namespace MySlideShow
             }
         }
 
+        private void FrmMySlideShow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            tmrAutoChange.Enabled = false;
+        }
     }
 }
