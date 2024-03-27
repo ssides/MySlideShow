@@ -37,6 +37,14 @@ namespace MySlideShow.Services
             }
         }
 
+        public void RestoreRecycledFile(string fullPath, string recycledPath)
+        {
+            if (File.Exists(recycledPath))
+            {
+                File.Copy(recycledPath, fullPath, true);
+            }
+        }
+
         private void GetFilesRecurse(string basepath)
         {
             var dirInfo = new DirectoryInfo(basepath);
@@ -103,11 +111,11 @@ namespace MySlideShow.Services
 
         internal string DeleteFile(string fullPath)
         {
-            var result = "";
+            var recycledPath = ""; // file cannot be automatically recycled.
 
             if (!fullPath.ToLower().StartsWith("c:"))
             {
-                result = CopyToTemp(fullPath);
+                recycledPath = CopyToTemp(fullPath);
             }
 
             FileSystem.DeleteFile(fullPath,
@@ -115,7 +123,7 @@ namespace MySlideShow.Services
                 RecycleOption.SendToRecycleBin,
                 UICancelOption.ThrowException);
 
-            return result;
+            return recycledPath;
         }
 
         private string CopyToTemp(string fullPath)
@@ -133,7 +141,7 @@ namespace MySlideShow.Services
             }
             File.Copy(fullPath, tfn, true);
 
-            return $"Copied to {tfn}";
+            return tfn;
         }
 
         private string GetFullTempPath(string tempPath, string fn, string ext, int i)

@@ -1,8 +1,8 @@
 ﻿namespace MySlideShow.Services
 {
-    internal static class View
+    internal class ViewBase
     {
-        public static Rectangle GetImageRectangle(Size viewSize, Size imgSize)
+        public Rectangle GetImageRectangle(Size viewSize, Size imgSize)
         {
             var displayRatio = (double)viewSize.Width / viewSize.Height;
             var imgRatio = (double)imgSize.Width / imgSize.Height;
@@ -28,7 +28,7 @@
             return new Rectangle(new Point(locX, locY), s);
         }
 
-        public static Bitmap Get404Image(Size viewSize)
+        public Bitmap Get404Image(Size viewSize)
         {
             var img = new Bitmap(500, 800);
 
@@ -49,7 +49,7 @@
             return img;
         }
 
-        public static void FillColor(Size viewSize, Graphics gfx, Color color)
+        public void FillColor(Size viewSize, Graphics gfx, Color color)
         {
             using (var br = new SolidBrush(color))
             {

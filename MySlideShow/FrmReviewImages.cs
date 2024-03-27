@@ -16,6 +16,7 @@ namespace MySlideShow
         private ReviewViewService _vs;
         private FileService _fs;
         private List<string> _files;
+        private Stack<Undo> _undo;
 
         public FrmReviewImages(Form owner, AppSettings settings)
         {
@@ -27,40 +28,15 @@ namespace MySlideShow
             _tempPath = Path.GetTempPath();
             _reviewedFiles = new List<ImageFile>();
             _reviewingFile = new ImageFile() { FullPath = "", HasBeenReviewed = true };
+            _undo = new Stack<Undo>();
             _vs = new ReviewViewService(pbImage.Size, _tempPath, _tempFiles, GetNumLines(txtMessages.Size.Height));
             _fs = new FileService();
-            _files = _fs.GetFiles(_settings.PicturePath, _settings.IncludeSubdirectories).OrderBy(s => s).ToList();
+            _files = _fs.GetFiles(_settings.PicturePath, _settings.IncludeSubdirectories).OrderBy(f => f).ToList();
             _reviewedFiles = new DataService().GetReviewedFiles(_fs.GetReviewedFiles(App.ReviewedFiles), _files);
             ShowNextImage("");
             var c = _reviewedFiles.Count(c => !c.HasBeenReviewed);
             txtMessages.Text = _vs.AddMessage($"{c} file(s) have not been reviewed.");
             btnDelete.Visible = btnDelete.Enabled = _settings.AllowDelete;
-        }
-
-        private int GetNumLines(int h)
-        {
-            Size sizeOfOneLine = TextRenderer.MeasureText("one line", txtMessages.Font);
-            return h / sizeOfOneLine.Height;
-        }
-
-        private void ShowNextImage(string message)
-        {
-            _reviewingFile = _reviewedFiles.OrderBy(i => i.FullPath).FirstOrDefault(f => !f.HasBeenReviewed);
-
-            if (_reviewingFile != null)
-            {
-                pbImage.Image = _vs.GetImage(_reviewingFile.FullPath);
-                txtPath.Text = _reviewingFile.FullPath;
-                if (!string.IsNullOrEmpty(message))
-                {
-                    txtMessages.Text = _vs.AddMessage(message);
-                }
-            }
-            else
-            {
-                _reviewingFile = new ImageFile("");
-                txtMessages.Text = _vs.AddMessage("All files have been reviewed.");
-            }
         }
 
         private void pbImage_SizeChanged(object sender, EventArgs e)
@@ -79,28 +55,40 @@ namespace MySlideShow
         {
             if (File.Exists(_reviewingFile.FullPath))
             {
-                var result = _fs.DeleteFile(_reviewingFile.FullPath);
-                if (!string.IsNullOrEmpty(result))
+                try
                 {
-                    txtMessages.Text = _vs.AddMessage(result);
-                }
+                    var recycledPath = _fs.DeleteFile(_reviewingFile.FullPath);
+                    if (!string.IsNullOrEmpty(recycledPath))
+                    {
+                        txtMessages.Text = _vs.AddMessage($"Copied to {recycledPath}");
+                    }
 
-                ShowReviewedAndGetNext($"Deleted \"{_reviewingFile.FullPath}\"");
+                    _undo.Push(new Undo { Action = App.Action.Delete, FullPath = _reviewingFile.FullPath, RecycledPath = recycledPath });
+                    ShowReviewedAndGetNext($"Deleted \"{_reviewingFile.FullPath}\"");
+                }
+                catch (Exception ex)
+                {
+                    new FrmError(this, ex.Message).ShowDialog();
+                }
+            }
+            else
+            {
+                ReportFileDoesNotExist();
             }
         }
+
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             if (File.Exists(_reviewingFile.FullPath))
             {
+                _undo.Push(new Undo { Action = App.Action.Save, FullPath = _reviewingFile.FullPath });
                 ShowReviewedAndGetNext($"Saved \"{_reviewingFile.FullPath}\"");
             }
-        }
-
-        private void ShowReviewedAndGetNext(string message)
-        {
-            _reviewingFile.HasBeenReviewed = true;
-            ShowNextImage(message);
+            else
+            {
+                ReportFileDoesNotExist();
+            }
         }
 
         private void txtPath_Leave(object sender, EventArgs e)
@@ -122,6 +110,7 @@ namespace MySlideShow
             }
             catch (Exception ex)
             {
+                txtPath.Text = _reviewingFile.FullPath;
                 new FrmError(this, ex.Message).ShowDialog();
             }
         }
@@ -142,5 +131,81 @@ namespace MySlideShow
                 }
             }
         }
+
+        private void btnUndo_Click(object sender, EventArgs e)
+        {
+            if (_undo.Count > 0)
+            {
+                var u = _undo.Pop();
+                if (u.Action == App.Action.Delete)
+                {
+                    if (string.IsNullOrEmpty(u.RecycledPath))
+                    {
+                        txtMessages.Text = _vs.AddMessage($"Please restore \"{u.FullPath}\" from the recycle bin.");
+                    }
+                    else
+                    {
+                        _fs.RestoreRecycledFile(u.FullPath, u.RecycledPath);
+                    }
+                }
+
+                _reviewingFile = _reviewedFiles.First(f => f.FullPath == u.FullPath);
+                _reviewingFile.HasBeenReviewed = false;
+                pbImage.Image = _vs.GetImage(_reviewingFile.FullPath);
+                txtPath.Text = _reviewingFile.FullPath;
+                txtMessages.Text = _vs.AddMessage($"Reviewing \"{_reviewingFile.FullPath}\".");
+            }
+            else
+            {
+                txtMessages.Text = _vs.AddMessage($"There is nothing to undo.");
+            }
+        }
+
+        private void pbImage_DoubleClick(object sender, EventArgs e)
+        {
+            pbImage.Image = _vs.GetImage(_reviewingFile.FullPath);
+            txtPath.Text = _reviewingFile.FullPath;
+        }
+
+        private void ShowReviewedAndGetNext(string message)
+        {
+            _reviewingFile.HasBeenReviewed = true;
+            ShowNextImage(message);
+        }
+
+        private void ShowNextImage(string message)
+        {
+            _reviewingFile = _reviewedFiles.OrderBy(f => f.FullPath).FirstOrDefault(f => !f.HasBeenReviewed);
+
+            if (_reviewingFile != null)
+            {
+                pbImage.Image = _vs.GetImage(_reviewingFile.FullPath);
+                txtPath.Text = _reviewingFile.FullPath;
+                if (!string.IsNullOrEmpty(message))
+                {
+                    txtMessages.Text = _vs.AddMessage(message);
+                }
+            }
+            else
+            {
+                _reviewingFile = new ImageFile("");
+                txtMessages.Text = _vs.AddMessage("All files have been reviewed.");
+            }
+        }
+        private int GetNumLines(int h)
+        {
+            Size sizeOfOneLine = TextRenderer.MeasureText("one line", txtMessages.Font);
+            return h / sizeOfOneLine.Height;
+        }
+
+        private void ReportFileDoesNotExist()
+        {
+            if (!string.IsNullOrEmpty(_reviewingFile.FullPath))
+            {
+                txtMessages.Text = _vs.AddMessage($"File does not exist: {_reviewingFile.FullPath}");
+            }
+        }
+
+      
     }
 }

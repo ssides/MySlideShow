@@ -1,6 +1,6 @@
 ﻿namespace MySlideShow.Services
 {
-    internal class SlideShowViewService
+    internal class SlideShowViewService : ViewBase
     {
         private Size _size;
         private Bitmap _404Image;
@@ -8,7 +8,7 @@
         internal SlideShowViewService(Size size)
         {
             _size = size;
-            _404Image = View.Get404Image(_size);
+            _404Image = Get404Image(_size);
         }
 
         internal Bitmap GetSlide(string path)
@@ -32,13 +32,13 @@
         private void DrawSlide(Graphics gfx, string path)
         {
             var img = new Bitmap(path);
-            var displayRect = View.GetImageRectangle(_size, img.Size);
+            var displayRect = GetImageRectangle(_size, img.Size);
             gfx.DrawImage(img, displayRect);
         }
 
         private void Draw404(Graphics gfx)
         {
-            var displayRect = View.GetImageRectangle(_size, _404Image.Size);
+            var displayRect = GetImageRectangle(_size, _404Image.Size);
             gfx.DrawImage(_404Image, displayRect);
         }
 
